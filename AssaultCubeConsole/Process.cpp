@@ -25,7 +25,7 @@ DWORD Process::GetProcessID(std::wstring processName)
 	return 0;
 }
 
-uint32_t Process::GetBaseAddress(DWORD processId, std::wstring moduleName)
+uintptr_t Process::GetBaseAddress(DWORD processId, std::wstring moduleName)
 {
 	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE32 | TH32CS_SNAPMODULE, processId);
 	if (hSnapshot != INVALID_HANDLE_VALUE)
@@ -36,7 +36,7 @@ uint32_t Process::GetBaseAddress(DWORD processId, std::wstring moduleName)
 		if (Module32First(hSnapshot, &moduleEntry))
 		{
 			do {
-				printf("%ls\n", moduleEntry.szModule);
+				// printf("%ls\n", moduleEntry.szModule);
 				if (!_wcsicmp(moduleName.c_str(), moduleEntry.szModule))
 				{
 					CloseHandle(hSnapshot);
@@ -50,13 +50,13 @@ uint32_t Process::GetBaseAddress(DWORD processId, std::wstring moduleName)
 	return 0;
 }
 
-uintptr_t Process::CalculatePointerAddress(HANDLE handle, uint32_t ptr, std::vector<uint32_t> offsets)
+uintptr_t Process::CalculatePointerAddress(HANDLE handle, uintptr_t ptr, std::vector<uint32_t> offsets)
 {
 	for (unsigned int i = 0; i < offsets.size(); ++i)
 	{
-		ReadProcessMemory(handle, (BYTE *)ptr, &ptr, sizeof(ptr), NULL);
+		ReadProcessMemory(handle, (BYTE*)ptr, &ptr, sizeof(ptr), NULL);
 		ptr += offsets.at(i);
 	}
 
-	return reinterpret_cast<uintptr_t>(ptr);
+	return ptr;
 }
