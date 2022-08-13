@@ -6,5 +6,8 @@
 
 int main()
 {
-	printf("%lu\n", Process::GetProcessID(L"ac_client.exe"));
+	DWORD proccessId = Process::GetProcessID(L"ac_client.exe");
+	// printf("%lu\n", proccessId);
+	uintptr_t baseAddress = Process::GetBaseAddress(proccessId, L"ac_client.exe");
+	printf("%lu\n", baseAddress);
 }
